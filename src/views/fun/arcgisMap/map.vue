@@ -13,18 +13,20 @@ function onReady(event) {
   </arcgis-basemap-toggle>
   </arcgis-map> -->
 
-  <arcgis-scene item-id="f477c289e93347aba6a0c052bfe0e0a4" style="width: 100%; height: 100%;">
+  <!-- <arcgis-scene item-id="f477c289e93347aba6a0c052bfe0e0a4" style="width: 100%; height: 100%;">
   <arcgis-building-explorer visible-elements-disciplines="true"
     visible-elements-levels="true" visible-elements-phases="true"
     position="top-right">
   </arcgis-building-explorer>
-</arcgis-scene>
+</arcgis-scene> -->
 
-<!-- <arcgis-scene item-id="5ce0de673d3b41a3bf3a217942211c4b" style="width: 100%; height: 100%;">
+<arcgis-scene item-id="5ce0de673d3b41a3bf3a217942211c4b" style="width: 100%; height: 100%;">
   <arcgis-area-measurement-3d position="top-right">
   </arcgis-area-measurement-3d>
+  <arcgis-directline-measurement-3d position="top-right">
+  </arcgis-directline-measurement-3d>
   <arcgis-search position="top-left" />
   <arcgis-basemap-toggle position="top-right">
   </arcgis-basemap-toggle>
-</arcgis-scene> -->
+</arcgis-scene>
 </template>

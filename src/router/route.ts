@@ -579,6 +579,21 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 							icon: 'iconfont icon--chaifenlie',
 						},
 					},
+					{
+						path: '/fun/timeTable',
+						name: 'funTimeTable',
+						component: () => import('/@/views/fun/timeTable/index.vue'),
+						meta: {
+							title: 'message.router.funSplitpanes',
+							isLink: '',
+							isHide: false,
+							isKeepAlive: true,
+							isAffix: false,
+							isIframe: false,
+							roles: ['admin', 'common'],
+							icon: 'iconfont icon--chaifenlie',
+						},
+					},
 				],
 			},
 			{
