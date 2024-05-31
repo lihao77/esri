@@ -4,9 +4,9 @@
       <div class="time-detail">{{ startTime }} - {{ endTime }}</div>
       <div class="time-controller">
         <el-button-group>
-          <el-button type="primary" @click="changeCount(1), getWeek(count)">下周</el-button>
-          <el-button round class="date-btn">本周</el-button>
-          <el-button type="primary" @click="changeCount(-1), getWeek(count)">上周</el-button>
+          <el-button type="primary" @click="changeCount(1), getWeek(count)">上周</el-button>
+          <el-button round class="date-btn" @click="changeCount(0), getWeek(count)">本周</el-button>
+          <el-button type="primary" @click="changeCount(-1), getWeek(count)">下周</el-button>
         </el-button-group>
       </div>
     </div>
@@ -102,6 +102,10 @@ export default {
   methods: {
     //改变选择器次数
     changeCount(i) {
+      if ( i == 0 ) {
+        this.count = 0;
+        return this.count;
+      }
       this.count += i;
       return this.count;
     },
@@ -218,6 +222,9 @@ export default {
       let last_sunday = moment()
         .subtract(weekOfDay + 7 * (i - 1), "days")
         .format("YYYY-MM-DD"); //周日日期
+      // console.log("weekOfDay:", weekOfDay);
+      // console.log("last_monday:", last_monday);
+      // console.log("last_sunday:", last_sunday);
       this.startTime = last_monday;
       this.endTime = last_sunday;
     },
@@ -230,17 +237,20 @@ export default {
   background-color: #f1f7ff;
 
   .w100 {
-    width: 100% ;
+    width: 100%;
     min-width: 800px;
   }
 
   .h100 {
-    height: 100% ;
+    height: 100%;
   }
 
   .time-b {
     height: 46px;
-    margin-bottom: 24px;
+    margin-bottom: 12px;
+    margin-top: 12px;
+    padding-left: 24px;
+    padding-right: 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -254,7 +264,7 @@ export default {
   }
 
   .timetable-b {
-    height: 1207px;
+    // height: 1207px;
     background-color: #fff;
     overflow: auto;
 
@@ -281,6 +291,7 @@ export default {
         td {
           padding: 3px;
           border: 2px solid rgba(27, 100, 240, 0.1);
+          height: 120px;
 
           .dmsjandjs-b {
             display: flex;

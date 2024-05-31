@@ -336,3 +336,9 @@ export default {
     }
 }
 </script>
+
+<style scoped lang="scss">
+td {
+    height: 120px !important;
+}
+</style>

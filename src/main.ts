@@ -9,6 +9,7 @@ import other from '/@/utils/other';
 import ElementPlus from 'element-plus';
 import '/@/theme/index.scss';
 import VueGridLayout from 'vue-grid-layout';
+import '@arcgis/core/assets/esri/themes/dark/main.css';
 
 const app = createApp(App);
 

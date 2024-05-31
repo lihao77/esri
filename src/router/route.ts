@@ -520,6 +520,21 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 						},
 					},
 					{
+						path: '/fun/arcgisMap1',
+						name: 'funArcgisMap1',
+						component: () => import('/@/views/fun/arcgisMap1/index.vue'),
+						meta: {
+							title: 'message.router.funArcgisMap1',
+							isLink: '',
+							isHide: false,
+							isKeepAlive: false,
+							isAffix: false,
+							isIframe: false,
+							roles: ['admin', 'common'],
+							icon: 'iconfont icon-ditu',
+						},
+					},
+					{
 						path: '/fun/printJs',
 						name: 'funPrintJs',
 						component: () => import('/@/views/fun/printJs/index.vue'),
@@ -584,7 +599,7 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 						name: 'funTimeTable',
 						component: () => import('/@/views/fun/timeTable/index.vue'),
 						meta: {
-							title: 'message.router.funSplitpanes',
+							title: 'message.router.funTimeTable',
 							isLink: '',
 							isHide: false,
 							isKeepAlive: true,

@@ -1,21 +1,20 @@
 <template>
 	<div v-if="isShowBreadcrumb" class="layout-navbars-breadcrumb">
-		<SvgIcon
-			class="layout-navbars-breadcrumb-icon"
-			:name="themeConfig.isCollapse ? 'ele-Expand' : 'ele-Fold'"
-			:size="16"
-			@click="onThemeConfigChange"
-		/>
+		<SvgIcon class="layout-navbars-breadcrumb-icon" :name="themeConfig.isCollapse ? 'ele-Expand' : 'ele-Fold'"
+			:size="16" @click="onThemeConfigChange" />
 		<el-breadcrumb class="layout-navbars-breadcrumb-hide">
 			<transition-group name="breadcrumb">
-				<el-breadcrumb-item v-for="(v, k) in state.breadcrumbList" :key="!v.meta.tagsViewName ? v.meta.title : v.meta.tagsViewName">
+				<el-breadcrumb-item v-for="(v, k) in state.breadcrumbList"
+					:key="!v.meta.tagsViewName ? v.meta.title : v.meta.tagsViewName">
 					<span v-if="k === state.breadcrumbList.length - 1" class="layout-navbars-breadcrumb-span">
-						<SvgIcon :name="v.meta.icon" class="layout-navbars-breadcrumb-iconfont" v-if="themeConfig.isBreadcrumbIcon" />
+						<SvgIcon :name="v.meta.icon" class="layout-navbars-breadcrumb-iconfont"
+							v-if="themeConfig.isBreadcrumbIcon" />
 						<div v-if="!v.meta.tagsViewName">{{ $t(v.meta.title) }}</div>
 						<div v-else>{{ v.meta.tagsViewName }}</div>
 					</span>
 					<a v-else @click.prevent="onBreadcrumbClick(v)">
-						<SvgIcon :name="v.meta.icon" class="layout-navbars-breadcrumb-iconfont" v-if="themeConfig.isBreadcrumbIcon" />{{ $t(v.meta.title) }}
+						<SvgIcon :name="v.meta.icon" class="layout-navbars-breadcrumb-iconfont"
+							v-if="themeConfig.isBreadcrumbIcon" />{{ $t(v.meta.title) }}
 					</a>
 				</el-breadcrumb-item>
 			</transition-group>
@@ -72,28 +71,44 @@ const setLocalThemeConfig = () => {
 // 处理面包屑数据
 const getBreadcrumbList = (arr: RouteItems) => {
 	arr.forEach((item: RouteItem) => {
-		state.routeSplit.forEach((v: string, k: number, arrs: string[]) => {
-			if (state.routeSplitFirst === item.path) {
-				state.routeSplitFirst += `/${arrs[state.routeSplitIndex]}`;
-				state.breadcrumbList.push(item);
-				state.routeSplitIndex++;
-				if (item.children) getBreadcrumbList(item.children);
-			}
-		});
+		// 路由列表长度
+		// state.routeSplit.forEach((v: string, k: number, arrs: string[]) => {
+		// 	// 当前路由数组长度
+		// 	if (state.routeSplitFirst === item.path) {
+		// 		state.routeSplitFirst += `/${arrs[state.routeSplitIndex]}`;
+		// 		state.breadcrumbList.push(item);
+		// 		state.routeSplitIndex++;
+		// 		console.log(state.routeSplitFirst)
+		// 		if (item.children) getBreadcrumbList(item.children);
+		// 		// console.log("item", item)
+		// 	}
+		// });
+		// console.log(item)
+		if (state.routeSplitFirst === item.path) {
+			state.routeSplitFirst += `/${state.routeSplit[state.routeSplitIndex]}`;
+			state.breadcrumbList.push(item);
+			state.routeSplitIndex++;
+			if (item.children) getBreadcrumbList(item.children);
+			// console.log("item", item)
+		}
 	});
 };
 // 当前路由字符串切割成数组，并删除第一项空内容
-const initRouteSplit = (path: string) => {
+const initRouteSplit = (path: string, name : any = '') => {
 	if (!themeConfig.value.isBreadcrumb) return false;
 	state.breadcrumbList = [routesList.value[0]];
 	state.routeSplit = path.split('/');
 	state.routeSplit.shift();
+	// state.routeSplitFirst = `/${state.routeSplit[0]}`;
 	state.routeSplitFirst = `/${state.routeSplit[0]}`;
 	state.routeSplitIndex = 1;
 	getBreadcrumbList(routesList.value);
-	if (route.name === 'home' || (route.name === 'notFound' && state.breadcrumbList.length > 1)) state.breadcrumbList.shift();
-	if (state.breadcrumbList.length > 0)
-		state.breadcrumbList[state.breadcrumbList.length - 1].meta.tagsViewName = other.setTagsViewNameI18n(<RouteToFrom>route);
+	!name? name = route.name : name = name;
+	if (name === 'home' || (route.name === 'notFound' && state.breadcrumbList.length > 1)) {
+		state.breadcrumbList.shift();
+	}
+	// if (state.breadcrumbList.length > 0)
+	// state.breadcrumbList[state.breadcrumbList.length - 1].meta.tagsViewName = other.setTagsViewNameI18n(<RouteToFrom>route);
 };
 // 页面加载时
 onMounted(() => {
@@ -101,7 +116,8 @@ onMounted(() => {
 });
 // 路由更新时
 onBeforeRouteUpdate((to) => {
-	initRouteSplit(to.path);
+	// console.log('onBeforeRouteUpdate', typeof(to.name))
+	initRouteSplit(to.path, to.name);
 });
 </script>
 
@@ -118,26 +134,32 @@ onBeforeRouteUpdate((to) => {
 		height: 100%;
 		width: 40px;
 		opacity: 0.8;
+
 		&:hover {
 			opacity: 1;
 		}
 	}
+
 	.layout-navbars-breadcrumb-span {
 		display: flex;
 		opacity: 0.7;
 		color: var(--next-bg-topBarColor);
 	}
+
 	.layout-navbars-breadcrumb-iconfont {
 		font-size: 14px;
 		margin-right: 5px;
 	}
+
 	:deep(.el-breadcrumb__separator) {
 		opacity: 0.7;
 		color: var(--next-bg-topBarColor);
 	}
+
 	:deep(.el-breadcrumb__inner a, .el-breadcrumb__inner.is-link) {
 		font-weight: unset !important;
 		color: var(--next-bg-topBarColor);
+
 		&:hover {
 			color: var(--el-color-primary) !important;
 		}

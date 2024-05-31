@@ -11,8 +11,8 @@
     </div>
 </template>
 
-<script setup lang="ts" name="funArcgisMap">
-import { ref, onMounted } from 'vue';
+<script setup lang="ts" name="funArcgisMap1">
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import esriConfig from '@arcgis/core/config';
 // import Map from '@arcgis/core/Map';
 import MapView from '@arcgis/core/views/MapView';
@@ -55,7 +55,9 @@ import Map2 from "./map2.vue";
 //     view.ui.add(homeWidget, "top-left");
 //     view.ui.add(searchWidget, "top-right");
 // })
-
+onBeforeUnmount(() => {
+    console.log("funArcgisMap1 组件销毁");
+})
 </script>
 
 <style lang="scss" scoped>
