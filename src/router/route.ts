@@ -271,6 +271,21 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 				},
 				children: [
 					{
+						path: '/fun/addTimeTable',
+						name: 'funAddTimeTable',
+						component: () => import('/@/views/fun/addTimeTable/index.vue'),
+						meta: {
+							title: 'message.router.funAddTimeTable',
+							isLink: '',
+							isHide: false,
+							isKeepAlive: true,
+							isAffix: false,
+							isIframe: false,
+							roles: ['admin', 'common'],
+							icon: 'ele-Pointer',
+						},
+					},
+					{
 						path: '/fun/tagsView',
 						name: 'funTagsView',
 						component: () => import('/@/views/fun/tagsView/index.vue'),

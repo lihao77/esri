@@ -25,6 +25,7 @@ export default {
 		menu13: '菜单13',
 		menu2: '菜单2',
 		funIndex: '功能',
+		funAddTimeTable: '添加课程表',
 		funTagsView: 'tagsView 操作',
 		funCountup: '数字滚动',
 		funWangEditor: 'Editor 编辑器',
