@@ -1,3 +1,5 @@
+import { info } from "console";
+
 // 定义内容
 export default {
 	router: {
@@ -78,6 +80,8 @@ export default {
 		layoutLinkView: '外链',
 		layoutIframeViewOne: '内嵌 iframe1',
 		layoutIframeViewTwo: '内嵌 iframe2',
+		infoIndex: '校园资讯',
+		infoNews: '校园新闻',
 	},
 	staticRoutes: {
 		signIn: '登录',

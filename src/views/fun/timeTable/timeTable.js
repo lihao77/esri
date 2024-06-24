@@ -58,7 +58,7 @@ let weekCourse = [
         {
           index: 5,
           startTime: "08:00", //开始时间
-          endTime: "09:30", //结束时间
+          endTime: "10:30", //结束时间
           subject: "Vue", //学科
           major: "计算机科学与技术", //专业
           class: "1702班", //班级
@@ -66,7 +66,7 @@ let weekCourse = [
         {
           index: 6,
           startTime: "08:00", //开始时间
-          endTime: "09:30", //结束时间
+          endTime: "10:30", //结束时间
           subject: "Vue", //学科
           major: "计算机科学与技术", //专业
           class: "1702班", //班级

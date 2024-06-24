@@ -32,7 +32,6 @@ const addLayer = function addLayer(layer, lever) {
       lever ? this.map.add(item, lever[index]) : this.map.add(item);
     });
   } else {
-    console.log(this.map.add);
     lever ? this.map.add(layer, lever) : this.map.add(layer);
   }
 };

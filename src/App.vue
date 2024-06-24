@@ -5,7 +5,7 @@
 		<Setings ref="setingsRef" v-show="setLockScreen" />
 		<!-- <CloseFull v-if="!themeConfig.isLockScreen" /> -->
 		<!-- <Upgrade v-if="getVersion" /> -->
-	</el-config-provider>			
+	</el-config-provider>
 </template>
 
 <script setup lang="ts" name="app">
@@ -90,7 +90,7 @@ onMounted(() => {
 });
 // 页面销毁时，关闭监听布局配置/i18n监听
 onUnmounted(() => {
-	mittBus.off('openSetingsDrawer', () => {});
+	mittBus.off('openSetingsDrawer', () => { });
 });
 // 监听路由的变化，设置网站标题
 watch(
@@ -103,3 +103,26 @@ watch(
 	}
 );
 </script>
+
+<style lang="scss">
+
+// 解决 esri-expand 在小屏幕下组件高度问题
+.esri-view-width-xsmall .esri-expand .esri-widget--panel {
+	max-height: 100% !important;
+}
+.esri-ui-top-left.esri-ui-corner .esri-expand__container.esri-expand__container--expanded{
+	left: 0;
+}
+
+// .esri-view-height-xsmall .esri-ui-corner .esri-component .esri-expand__content {
+// 	max-height: 100% !important;
+// }
+
+// .esri-view-height-small .esri-ui-corner .esri-component .esri-expand__content {
+// 	max-height: 100% !important;
+// }
+
+sup.el-badge__content.el-badge__content--danger.is-fixed.is-dot {
+	z-index: 0;
+}
+</style>

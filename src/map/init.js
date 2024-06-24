@@ -14,13 +14,15 @@ import ScaleBar from "@arcgis/core/widgets/ScaleBar.js";
 import MapView from '@arcgis/core/views/MapView'
 import SceneView from "@arcgis/core/views/SceneView";
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer'
+import WebMap from '@arcgis/core/WebMap'
+import SpatialReference from '@arcgis/core/geometry/SpatialReference'
 import esriConfig from '@arcgis/core/config'
 console.log(esriConfig)
 class ArcGIS {
   constructor() {
-    this.map = null; // 地图
-    this.view = null; // 视图
-    this.baseMap = null; // 地图底图 
+    this.map = undefined; // 地图
+    this.view = undefined; // 视图
+    this.baseMap = undefined; // 地图底图 
   }
   init(domID) {
     esriConfig.apiKey = "AAPKdbc785317bd1468ebdd0139037c9ecedpFWnVVRdGVvaMI1FYhNTw4W3HG3DTBzShMRxi1_xHJVKVhZZBTA247rGoR4gDM_k";
@@ -53,7 +55,7 @@ class ArcGIS {
       */
     this.baseMap = {
       // vectorMap: "arcgis-topographic", //矢量地图
-      vectorMap: "topo-3d", //矢量地图
+      vectorMap: "osm", //矢量地图
       // rasterMap: new SDRasterLayer(), //影像地图
       // rasterMapAnnotation: new SDRSAnnoLayer(), //影像注记
       // type: 1, // 1 为矢量 | 2：影像
@@ -61,11 +63,24 @@ class ArcGIS {
 
     // 设置初始化地图位置
     const startExtent = new Extent(
-      ...config.startExtent,
+      // ...config.startExtent,
+      {
+        xmin: -9000514.7891084,
+        ymin: 4194091.13204278,
+        xmax:  -8996841.24591222,
+        ymax: 4195317.60058408,
+        spatialReference: new SpatialReference({ wkid: 3857 })
+
+      }
+
       //  new SpatialReference({ wkid: 4490 })
     );
 
-
+    const webmap = new WebMap({
+      portalItem: {
+        id: "4793230052ed498ebf1c7bed9966bd35"
+      }
+    });
 
     // 添加地图实例
     this.map = new Map({
@@ -84,12 +99,14 @@ class ArcGIS {
     //     url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trailheads/FeatureServer/0"
     //   })]
     // });
-
-    this.view = new SceneView({
+    this.map = webmap;
+    this.view = new MapView({
       container: domID,
-      map: this.map,
+      // map: this.map,
+      map: webmap,
+
       extent: startExtent,
-      zoom: 15
+      // zoom: 15
       // map: this.map,
       // center: [-118.805, 34.027],
       // zoom: 13, // scale: 72223.819286
