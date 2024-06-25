@@ -92,37 +92,37 @@ export function formatTwoStageRoutes(arr: any) {
 
 // 路由加载前
 router.beforeEach(async (to, from, next) => {
-	NProgress.configure({ showSpinner: false });
-	if (to.meta.title) NProgress.start();
-	const token = Session.get('token');
-	if (to.path === '/login' && !token) {
-		next();
-		NProgress.done();
+	NProgress.configure({ showSpinner: false }); // 配置NProgress，不显示加载时的圆圈
+	if (to.meta.title) NProgress.start(); // 如果路由元信息包含title，则开始NProgress加载动画
+	const token = Session.get('token'); // 获取存储在Session中的token
+	if (to.path === '/login' || to.path === '/register' && !token) {
+		next(); // 如果路由是登录页或注册页且没有token，直接通行
+		NProgress.done(); // 结束NProgress加载动画
 	} else {
 		if (!token) {
-			next(`/login?redirect=${to.path}&params=${JSON.stringify(to.query ? to.query : to.params)}`);
-			Session.clear();
-			NProgress.done();
+			next(`/login?redirect=${to.path}&params=${JSON.stringify(to.query ? to.query : to.params)}`); // 没有token，跳转到登录页并传递重定向信息
+			Session.clear(); // 清除Session数据
+			NProgress.done(); // 结束NProgress加载动画
 		} else if (token && to.path === '/login') {
-			next('/home');
-			NProgress.done();
+			next('/home'); // 有token且路由是登录页，重定向到主页
+			NProgress.done(); // 结束NProgress加载动画
 		} else {
-			const storesRoutesList = useRoutesList(pinia);
-			const { routesList } = storeToRefs(storesRoutesList);
+			const storesRoutesList = useRoutesList(pinia); // 获取路由列表存储
+			const { routesList } = storeToRefs(storesRoutesList); // 获取路由列表的引用
 			if (routesList.value.length === 0) {
 				if (isRequestRoutes) {
 					// 后端控制路由：路由数据初始化，防止刷新时丢失
-					await initBackEndControlRoutes();
+					await initBackEndControlRoutes(); // 初始化后端控制路由
 					// 解决刷新时，一直跳 404 页面问题，关联问题 No match found for location with path 'xxx'
 					// to.query 防止页面刷新时，普通路由带参数时，参数丢失。动态路由（xxx/:id/:name"）isDynamic 无需处理
-					next({ path: to.path, query: to.query });
+					next({ path: to.path, query: to.query }); // 解决刷新后路由参数丢失问题
 				} else {
-					// https://gitee.com/lyt-top/vue-next-admin/issues/I5F1HP
-					await initFrontEndControlRoutes();
-					next({ path: to.path, query: to.query });
+					// 前端控制路由：从本地数据初始化路由信息
+					await initFrontEndControlRoutes(); // 初始化前端控制路由
+					next({ path: to.path, query: to.query }); // 解决刷新后路由参数丢失问题
 				}
 			} else {
-				next();
+				next(); // 如果路由列表不为空，直接通行
 			}
 		}
 	}

@@ -15,16 +15,16 @@
         <thead>
           <tr>
             <th></th>
-            <!-- <th>周一</th>
+            <th>周一</th>
             <th>周二</th>
             <th>周三</th>
             <th>周四</th>
             <th>周五</th>
             <th>周六</th>
-            <th>周日</th> -->
-            <th v-for="(item1, index1) in weeks" :key="index1">
+            <th>周日</th>
+            <!-- <th v-for="(item1, index1) in weeks" :key="index1">
               {{ "周" + numberToChinease(item1 + 1, "week") }}
-            </th>
+            </th> -->
           </tr>
         </thead>
         <tbody>

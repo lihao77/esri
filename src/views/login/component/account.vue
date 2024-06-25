@@ -1,42 +1,32 @@
 <template>
 	<el-form size="large" class="login-content-form">
 		<el-form-item class="login-animation1">
-			<el-input text :placeholder="$t('message.account.accountPlaceholder1')" v-model="state.ruleForm.userName" clearable autocomplete="off">
+			<el-input text :placeholder="$t('message.account.accountPlaceholder1')" v-model="state.ruleForm.userName"
+				clearable autocomplete="off">
 				<template #prefix>
 					<el-icon class="el-input__icon"><ele-User /></el-icon>
 				</template>
 			</el-input>
 		</el-form-item>
 		<el-form-item class="login-animation2">
-			<el-input
-				:type="state.isShowPassword ? 'text' : 'password'"
-				:placeholder="$t('message.account.accountPlaceholder2')"
-				v-model="state.ruleForm.password"
-				autocomplete="off"
-			>
+			<el-input :type="state.isShowPassword ? 'text' : 'password'"
+				:placeholder="$t('message.account.accountPlaceholder2')" v-model="state.ruleForm.password"
+				autocomplete="off">
 				<template #prefix>
 					<el-icon class="el-input__icon"><ele-Unlock /></el-icon>
 				</template>
 				<template #suffix>
-					<i
-						class="iconfont el-input__icon login-content-password"
+					<i class="iconfont el-input__icon login-content-password"
 						:class="state.isShowPassword ? 'icon-yincangmima' : 'icon-xianshimima'"
-						@click="state.isShowPassword = !state.isShowPassword"
-					>
+						@click="state.isShowPassword = !state.isShowPassword">
 					</i>
 				</template>
 			</el-input>
 		</el-form-item>
 		<el-form-item class="login-animation3">
 			<el-col :span="15">
-				<el-input
-					text
-					maxlength="4"
-					:placeholder="$t('message.account.accountPlaceholder3')"
-					v-model="state.ruleForm.code"
-					clearable
-					autocomplete="off"
-				>
+				<el-input text maxlength="4" :placeholder="$t('message.account.accountPlaceholder3')"
+					v-model="state.ruleForm.code" clearable autocomplete="off">
 					<template #prefix>
 						<el-icon class="el-input__icon"><ele-Position /></el-icon>
 					</template>
@@ -48,9 +38,19 @@
 			</el-col>
 		</el-form-item>
 		<el-form-item class="login-animation4">
-			<el-button type="primary" class="login-content-submit" round v-waves @click="onSignIn" :loading="state.loading.signIn">
-				<span>{{ $t('message.account.accountBtnText') }}</span>
-			</el-button>
+			<el-col :span="11">
+				<el-button type="primary" class="login-content-submit" round v-waves @click="onSignIn"
+					:loading="state.loading.signIn">
+					<span>{{ $t('message.account.accountBtnText1') }}</span>
+				</el-button>
+			</el-col>
+			<el-col :span="2"></el-col>
+			<el-col :span="11">
+				<el-button round type="primary" v-waves class="login-content-submit" @click="navigateToRegister">
+					<span>{{ $t('message.account.accountBtnText2') }}</span>
+				</el-button>
+			</el-col>
+
 		</el-form-item>
 	</el-form>
 </template>
@@ -68,6 +68,8 @@ import { initBackEndControlRoutes } from '/@/router/backEnd';
 import { Session } from '/@/utils/storage';
 import { formatAxis } from '/@/utils/formatTime';
 import { NextLoading } from '/@/utils/loading';
+
+
 
 // 定义变量内容
 const { t } = useI18n();
@@ -91,6 +93,10 @@ const state = reactive({
 const currentTime = computed(() => {
 	return formatAxis(new Date());
 });
+
+const navigateToRegister = () => {
+	router.push({ name: 'register' });
+};
 // 登录
 const onSignIn = async () => {
 	state.loading.signIn = true;
@@ -141,6 +147,7 @@ const signInSuccess = (isNoPower: boolean | undefined) => {
 <style scoped lang="scss">
 .login-content-form {
 	margin-top: 20px;
+
 	@for $i from 1 through 4 {
 		.login-animation#{$i} {
 			opacity: 0;
@@ -150,20 +157,24 @@ const signInSuccess = (isNoPower: boolean | undefined) => {
 			animation-delay: calc($i/10) + s;
 		}
 	}
+
 	.login-content-password {
 		display: inline-block;
 		width: 20px;
 		cursor: pointer;
+
 		&:hover {
 			color: #909399;
 		}
 	}
+
 	.login-content-code {
 		width: 100%;
 		padding: 0;
 		font-weight: bold;
 		letter-spacing: 5px;
 	}
+
 	.login-content-submit {
 		width: 100%;
 		letter-spacing: 2px;

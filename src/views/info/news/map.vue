@@ -2,7 +2,7 @@
   <div class="newsMain">
     <div id="newsMap"></div>
     <div id="test" style="width: 100%;" ref='test'>
-      <el-collapse v-model="activeNames" @change="handleChange">
+      <!-- <el-collapse v-model="activeNames" @change="handleChange">
         <el-collapse-item title="Consistency" name="1">
           <div>
             Consistent with real life: in line with the process and logic of real
@@ -47,7 +47,17 @@
             operation.
           </div>
         </el-collapse-item>
-      </el-collapse>
+      </el-collapse> -->
+      <el-container>
+        <el-header ><div ref="newsHeader"></div></el-header>
+        <el-main>
+          <div class="article-content">
+            <!-- 文章内容 -->
+            <p ref="newsContent">这里是文章的第一段内容...</p>
+            <!-- 更多内容 -->
+          </div>
+        </el-main>
+      </el-container>
     </div>
   </div>
 
@@ -79,6 +89,8 @@ const handleChange = (val: string[]) => {
   console.log(val)
 }
 const test = ref()
+const newsContent = ref()
+const newsHeader = ref()
 onMounted(() => {
   Map.init("newsMap");
   // // 测量工具初始化
@@ -104,9 +116,10 @@ onMounted(() => {
   });
 
   const testtttttt = new FeatureLayer({
-    url: "https://pqyportal.geoscene.cn/geoscene/rest/services/Hosted/地图_WFL1/FeatureServer/0",
-    // url: "https://pqyportal.geoscene.cn/geoscene/rest/services/Hosted/building/VectorTileServer",
-    title: "testtttttt",
+    // url: "https://pqyportal.geoscene.cn/geoscene/rest/services/Hosted/地图_WFL1/FeatureServer/0",
+    // url: "https://pqyportal.geoscene.cn/geoscene/rest/services/Hosted/Building_WFL1/FeatureServer/0",
+    url: "https://pqyportal.geoscene.cn/geoscene/rest/services/Hosted/newsMap_WFL1/FeatureServer/0",
+    title: "新闻地图",
     editingEnabled: true,
   })
 
@@ -115,6 +128,11 @@ onMounted(() => {
     outFields: ["*"],
     creator: (event) => {
       // creator function returns either string, HTMLElement, Widget, or Promise
+      console.log("event?.graphic.attributes", event?.graphic.attributes);
+      console.log("newsContent.value", newsContent.value);
+      newsContent.value.innerHTML = `${event?.graphic.attributes?.content}`;
+      newsHeader.value.innerHTML = `<h2>${event?.graphic.attributes?.title}</h2>`;
+      
       return test.value
     }
   });
@@ -125,7 +143,7 @@ onMounted(() => {
   };
   const template = {
     outFields: ["*"],
-    title: "State",
+    title: "新闻地图",
     content: [customContentWidget],
     actions: [editThisAction]
   };
@@ -303,7 +321,7 @@ onMounted(() => {
       const editor = new Editor({
         view: Map.view
       });
-          
+
       // 每次单击“编辑要素”操作时执行
       function editThis() {
         // 如果编辑器的activeWorkflow为null，则使弹出窗口不可见
@@ -314,7 +332,7 @@ onMounted(() => {
           // 调用编辑器更新要素编辑工作流程
           editor.startUpdateWorkflowAtFeatureEdit(Map.view.popup.selectedFeature);
           // Map.view.ui.add(editor, "top-right");
-          editThisFlag = [true,editorExpand.expanded];
+          editThisFlag = [true, editorExpand.expanded];
           editorExpand.expanded = true;
         }
 
@@ -357,14 +375,14 @@ onMounted(() => {
         if (editor.activeWorkflow) {
           editor.viewModel.cancelWorkflow();
         }
-        
+
       });
 
       const editorExpand = new Expand({
         view: Map.view,
         content: editor
       });
-      let editThisFlag = [true,editorExpand.expanded];
+      let editThisFlag = [true, editorExpand.expanded];
 
       // Add the widget to the view
       Map.view.ui.add(editorExpand, "top-right");
@@ -398,6 +416,10 @@ onBeforeUnmount(() => {
   #newsMap {
     width: 100%;
     height: 100%;
+  }
+
+  .article-content p {
+    margin-bottom: 1em;
   }
 }
 </style>

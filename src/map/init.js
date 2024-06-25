@@ -65,11 +65,11 @@ class ArcGIS {
     const startExtent = new Extent(
       // ...config.startExtent,
       {
-        xmin: -9000514.7891084,
-        ymin: 4194091.13204278,
-        xmax:  -8996841.24591222,
-        ymax: 4195317.60058408,
-        spatialReference: new SpatialReference({ wkid: 3857 })
+        xmin: 113.251878,
+        ymin: 35.186173,
+        xmax:  113.254299,
+        ymax: 35.188961,
+        spatialReference: new SpatialReference({ wkid: 4326 })
 
       }
 
@@ -83,27 +83,27 @@ class ArcGIS {
     });
 
     // 添加地图实例
-    this.map = new Map({
-      basemap: this.baseMap.vectorMap,
-      extent: startExtent, // 初始化位置
-      zoom: 10, // 缩放级别
-      logo: false, // esri logo
-      maxZoom: 18, // 最大缩放级别
-      sliderPosition: "bottom-right", // 缩小放大按钮位置
-
-    });
-
     // this.map = new Map({
-    //   basemap: "arcgis-topographic", // Basemap layer
-    //   layers: [new FeatureLayer({
-    //     url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trailheads/FeatureServer/0"
-    //   })]
+    //   basemap: this.baseMap.vectorMap,
+    //   extent: startExtent, // 初始化位置
+    //   zoom: 10, // 缩放级别
+    //   logo: false, // esri logo
+    //   maxZoom: 18, // 最大缩放级别
+    //   sliderPosition: "bottom-right", // 缩小放大按钮位置
+
     // });
-    this.map = webmap;
+    // this.map = webmap;
+
+    this.map = new Map({
+      basemap: "osm", // Basemap layer
+      layers: [new FeatureLayer({
+        url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trailheads/FeatureServer/0"
+      })]
+    });
     this.view = new MapView({
       container: domID,
       // map: this.map,
-      map: webmap,
+      map: this.map,
 
       extent: startExtent,
       // zoom: 15
