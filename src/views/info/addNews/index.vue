@@ -51,7 +51,7 @@
                                                     <el-input v-model="newsState.form.position" placeholder="使用左边按钮选择位置"
                                                         disabled clearable>
                                                         <template #prepend>
-                                                            <el-button @click="selectPosition()">
+                                                            <el-button @click="selectPosition($event)">
                                                                 <SvgIcon name="ele-Location" />
                                                             </el-button>
                                                         </template>
@@ -129,7 +129,7 @@ const updateArrowDirection = (oldVal: Number, newVal: Number) => {
 };
 
 // 选择位置
-const selectPosition = () => {
+const selectPosition = (event: MouseEvent) => {
     console.log('选择位置');
     event.stopPropagation();
     updateArrowDirection(paneSize.value, sidebarStyle[sidebarType.value].clickMapToMaxSize);
