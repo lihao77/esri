@@ -38,14 +38,14 @@
 			</el-col>
 		</el-form-item>
 		<el-form-item class="login-animation4">
-			<el-col :span="11">
+			<el-col :span="16">
 				<el-button type="primary" class="login-content-submit" round v-waves @click="onSignIn"
 					:loading="state.loading.signIn">
 					<span>{{ $t('message.account.accountBtnText1') }}</span>
 				</el-button>
 			</el-col>
-			<el-col :span="2"></el-col>
-			<el-col :span="11">
+			<el-col :span="1"></el-col>
+			<el-col :span="7">
 				<el-button round type="primary" v-waves class="login-content-submit" @click="navigateToRegister">
 					<span>{{ $t('message.account.accountBtnText2') }}</span>
 				</el-button>
@@ -68,9 +68,10 @@ import { initBackEndControlRoutes } from '/@/router/backEnd';
 import { Session } from '/@/utils/storage';
 import { formatAxis } from '/@/utils/formatTime';
 import { NextLoading } from '/@/utils/loading';
+import { useLoginApi } from '/@/api/login';
 
 
-
+const loginApi = useLoginApi();
 // 定义变量内容
 const { t } = useI18n();
 const storesThemeConfig = useThemeConfig();
@@ -80,8 +81,8 @@ const router = useRouter();
 const state = reactive({
 	isShowPassword: false,
 	ruleForm: {
-		userName: 'admin',
-		password: '123456',
+		userName: '12',
+		password: '12',
 		code: '1234',
 	},
 	loading: {
@@ -99,22 +100,34 @@ const navigateToRegister = () => {
 };
 // 登录
 const onSignIn = async () => {
+	// loginApi.signIn(state.ruleForm).then(async (res) => {
+
+	// 	state.loading.signIn = true;
+	// 	// 存储 token 到浏览器缓存
+	// 	Session.set('token', res.token);
+	// 	// 模拟数据，对接接口时，记得删除多余代码及对应依赖的引入。用于 `/src/stores/userInfo.ts` 中不同用户登录判断（模拟数据）
+	// 	Cookies.set('userName', state.ruleForm.userName);
+	// 	if (!themeConfig.value.isRequestRoutes) {
+	// 		// 前端控制路由，2、请注意执行顺序
+	// 		const isNoPower = await initFrontEndControlRoutes();
+	// 		signInSuccess(isNoPower);
+	// 	} else {
+	// 		// 模拟后端控制路由，isRequestRoutes 为 true，则开启后端控制路由
+	// 		// 添加完动态路由，再进行 router 跳转，否则可能报错 No match found for location with path "/"
+	// 		const isNoPower = await initBackEndControlRoutes();
+	// 		// 执行完 initBackEndControlRoutes，再执行 signInSuccess
+	// 		signInSuccess(isNoPower);
+	// 	}
+	// });
 	state.loading.signIn = true;
 	// 存储 token 到浏览器缓存
-	Session.set('token', Math.random().toString(36).substr(0));
+	Session.set('token', 'qaweqw12312');
 	// 模拟数据，对接接口时，记得删除多余代码及对应依赖的引入。用于 `/src/stores/userInfo.ts` 中不同用户登录判断（模拟数据）
-	Cookies.set('userName', state.ruleForm.userName);
-	if (!themeConfig.value.isRequestRoutes) {
-		// 前端控制路由，2、请注意执行顺序
-		const isNoPower = await initFrontEndControlRoutes();
-		signInSuccess(isNoPower);
-	} else {
-		// 模拟后端控制路由，isRequestRoutes 为 true，则开启后端控制路由
-		// 添加完动态路由，再进行 router 跳转，否则可能报错 No match found for location with path "/"
-		const isNoPower = await initBackEndControlRoutes();
-		// 执行完 initBackEndControlRoutes，再执行 signInSuccess
-		signInSuccess(isNoPower);
-	}
+	Cookies.set('userName', '12');
+	// 前端控制路由，2、请注意执行顺序
+	const isNoPower = await initFrontEndControlRoutes();
+	signInSuccess(isNoPower);
+
 };
 // 登录成功后的跳转
 const signInSuccess = (isNoPower: boolean | undefined) => {

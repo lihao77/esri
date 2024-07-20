@@ -1,83 +1,96 @@
 <template>
-    <el-scrollbar height="244px">
-        <el-form size="large" class="register-content-form" :rules="rules" :model="state.ruleForm" ref="registerForm">
-            <el-form-item class="register-animation1" prop="userName">
-                <el-input :placeholder="$t('message.register.placeholder1')" v-model="state.ruleForm.userName" clearable
-                    autocomplete="off">
-                    <template #prefix>
-                        <i class="iconfont icon-user el-input__icon"></i>
-                    </template>
-                </el-input>
-            </el-form-item>
-            <el-form-item class="register-animation2" prop="email">
-                <el-input :placeholder="$t('message.register.placeholderEmail')" v-model="state.ruleForm.email"
-                    clearable autocomplete="off">
-                    <template #prefix>
-                        <i class="iconfont icon-email el-input__icon"></i>
-                    </template>
-                </el-input>
+    <!-- 注册表单，使用 Element UI 的 el-form 组件，提供表单验证规则 -->
+    <el-form size="large" class="register-content-form" :rules="rules" :model="state.ruleForm" ref="registerForm"
+        autocomplete="off">
+        <!-- 用户名输入框 -->
+        <el-form-item class="register-animation1" prop="userName">
+            <el-input :placeholder="$t('message.register.placeholder1')" v-model="state.ruleForm.userName" clearable
+                autocomplete="off">
+                <template #prefix>
+                    <el-icon class="el-input__icon"><ele-User /></el-icon>
+                </template>
+            </el-input>
+        </el-form-item>
 
+        <!-- 邮箱输入框 -->
+        <el-form-item class="register-animation2" prop="email">
+            <el-input :placeholder="$t('message.register.placeholderEmail')" v-model="state.ruleForm.email" clearable
+                autocomplete="off">
+                <template #prefix>
+                    <el-icon class="el-input__icon"><ele-Message /></el-icon>
+                </template>
+            </el-input>
+        </el-form-item>
 
-            </el-form-item>
-
-            <el-form-item class="register-animation3">
-                <el-col :span="15">
-                    <el-input text maxlength="4" :placeholder="$t('message.account.accountPlaceholder3')"
-                        v-model="state.ruleForm.code" clearable autocomplete="off">
-                        <template #prefix>
-                            <el-icon class="el-input__icon"><ele-Position /></el-icon>
-                        </template>
-                    </el-input>
-                </el-col>
-                <el-col :span="1"></el-col>
-                <el-col :span="8">
-                    <el-button class="login-content-code" v-waves>发送验证码</el-button>
-                </el-col>
-            </el-form-item>
-            <!-- <el-form-item :span="24" class="register-animation2">
-           
-        </el-form-item> -->
-            <el-form-item class="register-animation4" prop="code">
-                <el-input text maxlength="4" :placeholder="$t('message.register.placeholder2')"
+        <!-- 验证码输入框和发送按钮 -->
+        <el-form-item class="register-animation3">
+            <el-col :span="15">
+                <el-input maxlength="4" :placeholder="$t('message.account.accountPlaceholder3')"
                     v-model="state.ruleForm.code" clearable autocomplete="off">
                     <template #prefix>
                         <el-icon class="el-input__icon"><ele-Position /></el-icon>
                     </template>
                 </el-input>
-            </el-form-item>
-            <el-form-item class="register-animation5" prop="password">
-                <el-input type="password" :placeholder="$t('message.register.placeholderPassword')"
-                    v-model="state.ruleForm.password" clearable autocomplete="off">
-                    <template #prefix>
-                        <i class="iconfont icon-lock el-input__icon"></i>
-                    </template>
-                </el-input>
-            </el-form-item>
-            <el-form-item class="register-animation6" prop="confirmPassword">
-                <el-input type="password" :placeholder="$t('message.register.placeholderConfirmPassword')"
-                    v-model="state.ruleForm.confirmPassword" clearable autocomplete="off">
-                    <template #prefix>
-                        <i class="iconfont icon-lock el-input__icon"></i>
-                    </template>
-                </el-input>
-            </el-form-item>
-            <el-form-item class="register-animation7">
+            </el-col>
+            <el-col :span="1"></el-col>
+            <el-col :span="8">
+                <el-button class="register-content-code" v-waves>发送验证码</el-button>
+            </el-col>
+        </el-form-item>
+
+        <!-- 密码输入框 -->
+        <el-form-item class="register-animation5" prop="password">
+            <el-input type="password" :placeholder="$t('message.register.placeholderPassword')"
+                v-model="state.ruleForm.password" clearable autocomplete="new-password">
+                <template #prefix>
+                    <el-icon class="el-input__icon"><ele-Unlock /></el-icon>
+                </template>
+            </el-input>
+        </el-form-item>
+
+        <!-- 确认密码输入框 -->
+        <el-form-item class="register-animation6" prop="confirmPassword">
+            <el-input type="password" :placeholder="$t('message.register.placeholderConfirmPassword')"
+                v-model="state.ruleForm.confirmPassword" clearable autocomplete="new-password">
+                <template #prefix>
+                    <el-icon class="el-input__icon"><ele-Unlock /></el-icon>
+                </template>
+            </el-input>
+        </el-form-item>
+
+        <!-- 提交按钮 -->
+        <el-form-item class="register-animation7">
+            <el-col :span="15">
                 <el-button round type="primary" v-waves class="register-content-submit" @click="handleSubmit">
-                    <span>{{ $t('message.register.btnText') }}</span>
+                    <span>{{ $t('message.register.btnText1') }}</span>
                 </el-button>
-            </el-form-item>
-            <div class="font12 mt30 register-animation7 register-msg">
-                {{ $t('message.register.msgText') }}
-            </div>
-        </el-form>
-    </el-scrollbar>
+            </el-col>
+            <el-col :span="1"></el-col>
+            <el-col :span="8">
+                <el-button round type="primary" v-waves class="register-content-submit" @click="navigateToLogin">
+                    <span>{{ $t('message.register.btnText2') }}</span>
+
+                </el-button>
+            </el-col>
+
+        </el-form-item>
+
+        <!-- 注册提示信息 -->
+        <div class="font12 mt30 register-animation7 register-msg">
+            {{ $t('message.register.msgText') }}
+        </div>
+    </el-form>
 
 </template>
 
 <script setup lang="ts" name="registerMobile">
+import { useRoute, useRouter } from 'vue-router';
 import { reactive, ref } from 'vue';
 import { ElMessage } from 'element-plus';
+import { useRegisterApi } from '/@/api/register';
 
+const router = useRouter();
+const registerApi = useRegisterApi();
 // Define reactive state
 const state = reactive({
     ruleForm: {
@@ -88,6 +101,9 @@ const state = reactive({
         confirmPassword: '',
     }
 });
+const navigateToLogin = () => {
+    router.push({ name: 'login' });
+};
 
 // Form reference
 const registerForm = ref(null);
@@ -132,9 +148,14 @@ const handleSubmit = () => {
     registerForm.value.validate((valid: boolean) => {
         if (valid) {
             // 处理注册逻辑
-            ElMessage.success('注册成功');
-            // 重置表单
-            registerForm.value.resetFields();
+            registerApi.register(state.ruleForm).then(() => {
+                // 注册成功逻辑
+                ElMessage.success('注册成功');
+                // 重置表单
+                registerForm.value.resetFields();
+                navigateToLogin()
+            })
+
         } else {
             ElMessage.error('请填写完整的注册信息');
             return false;
@@ -187,7 +208,7 @@ const handleSubmit = () => {
     }
 }
 
-.login-content-code {
+.register-content-code {
     width: 100%;
     padding: 0;
     // font-weight: bold;

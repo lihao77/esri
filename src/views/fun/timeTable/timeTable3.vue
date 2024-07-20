@@ -22,9 +22,6 @@
             <th>周五</th>
             <th>周六</th>
             <th>周日</th>
-            <!-- <th v-for="(item1, index1) in weeks" :key="index1">
-              {{ "周" + numberToChinease(item1 + 1, "week") }}
-            </th> -->
           </tr>
         </thead>
         <tbody>
@@ -47,7 +44,7 @@
               ? 'none'
               : '',
         },
-      ]">
+      ]" @click="handleCellClick(showData(index3, index2))">
               <div class="dmsjandjs-b" :style="[
         {
           background: showData(index3, index2).index
@@ -65,7 +62,7 @@
                   {{ showData(index3, index2).endTime }}
                 </p>
                 <p>{{ showData(index3, index2).subject }}</p>
-                <p>{{ showData(index3, index2).major }}</p>
+                <p>{{ showData(index3, index2).place }}</p>
                 <p>{{ showData(index3, index2).class }}</p>
               </div>
             </td>
@@ -77,44 +74,78 @@
   </div>
 </template>
 
+
 <script>
 import moment from "moment";
+import { useTimeTableApi } from "/@/api/fun/timeTable";
+
 import { weekCourse, colorList } from "./timeTable.js";
+const timeTableApi = useTimeTableApi();
 export default {
   data() {
     return {
+      weekStartTime: "2024.2.26",
       startTime: "2022.10.17",
       endTime: "2022.10.23",
       colorList: [], //随机颜色
       weekCourse: [], // 课程详细课程、数量
       weeks: [], //头部周期
       maxCourseLength: 0, //最大课节数,
-      count: 0, //上周、下周、本周选择器flag
+      count: 1, //上周、下周、本周选择器flag
     };
   },
   created() {
     this.weekCourse = weekCourse;
-    this.colorList = colorList;
-    this.sortData();
-    this.init();
-    this.getWeek(0);
+    this.countInit();
+    timeTableApi.getTimeTable({ week: this.count }).then((res) => {
+      console.log("res:", res);
+      this.weekCourse = res.data;
+      this.colorList = colorList;
+      this.sortData();
+      this.init();
+      this.getWeek(this.count);
+      console.log(this.weeks)
+    });
+
   },
   methods: {
     //改变选择器次数
     changeCount(i) {
-      if ( i == 0 ) {
-        this.count = 0;
+      if (this.count == i) {
+        this.count = 1;
+        return this.count;
+      } else if (i == 0) {
+        this.countInit()
+        timeTableApi.getTimeTable({ week: this.count }).then((res) => {
+          console.log("res:", res);
+          this.weekCourse = res.data;
+          this.colorList = colorList;
+          this.sortData();
+          this.init();
+          this.getWeek(this.count);
+          console.log(this.weeks)
+        });
         return this.count;
       }
-      this.count += i;
+
+      this.count -= i;
+      timeTableApi.getTimeTable({ week: this.count }).then((res) => {
+        console.log("res:", res);
+        this.weekCourse = res.data;
+        this.colorList = colorList;
+        this.sortData();
+        this.init();
+        this.getWeek(this.count);
+        console.log(this.weeks)
+      });
       return this.count;
     },
     // 排序周期和课数
     sortData() {
       //周期
-      this.weekCourse.sort((a, b) => {
-        return a.week - b.week;
-      });
+      // this.weekCourse.sort((a, b) => {
+      //   return a.week - b.week;
+      // });
       this.weekCourse.forEach((item) => {
         for (const key in item) {
           if (key === "courses") {
@@ -124,6 +155,10 @@ export default {
           }
         }
       });
+    },
+
+    countInit() {
+      this.count = 1 + this.getWeekNumber(this.weekStartTime, moment().format("YYYY.MM.DD"));
     },
     // 初始化课数(courses)与天数(week)
     init() {
@@ -215,18 +250,30 @@ export default {
 
     //随机上、本、下周 日期
     getWeek(i) {
-      let weekOfDay = parseInt(moment().format("E")); //计算今天是这周第几天
-      let last_monday = moment()
-        .subtract(weekOfDay + 7 * i - 1, "days")
+      let weekOfDay = parseInt(moment(this.weekStartTime).format("E")); //计算今天是这周第几天
+      let last_monday = moment(this.weekStartTime)
+        .subtract(weekOfDay - 7 * (i - 1) - 1, "days")
         .format("YYYY-MM-DD"); //周一日期
-      let last_sunday = moment()
-        .subtract(weekOfDay + 7 * (i - 1), "days")
+      let last_sunday = moment(this.weekStartTime)
+        .subtract(weekOfDay - 7 * (i), "days")
         .format("YYYY-MM-DD"); //周日日期
-      // console.log("weekOfDay:", weekOfDay);
-      // console.log("last_monday:", last_monday);
-      // console.log("last_sunday:", last_sunday);
+      console.log("weekOfDay:", weekOfDay);
+      console.log("weekOfDay:", this.count);
+      console.log("last_monday:", last_monday);
+      console.log("last_sunday:", last_sunday);
       this.startTime = last_monday;
       this.endTime = last_sunday;
+    },
+    handleCellClick(courseData) {
+      if (courseData.subject) {
+        // console.log(JSON.parse(courseData.location));
+        this.$emit('setPoint', JSON.parse(courseData.location))
+      }
+    },
+    getWeekNumber(startDate, endDate) {
+      const start = moment(startDate, "YYYY.MM.DD");
+      const end = moment(endDate, "YYYY.MM.DD");
+      return end.diff(start, 'weeks');
     },
   },
 };

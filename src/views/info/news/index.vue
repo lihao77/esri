@@ -6,7 +6,7 @@
     </div>
 </template>
 
-<script setup lang="ts" name="funArcgisMap1">
+<script setup lang="ts" name="infoNews">
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import esriConfig from '@arcgis/core/config';
 // import Map from '@arcgis/core/Map';

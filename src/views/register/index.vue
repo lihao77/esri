@@ -20,14 +20,7 @@
                 <div class="register-right-warp-mian">
                     <div class="register-right-warp-main-title">{{ getThemeConfig.globalTitle }} 欢迎您！</div>
                     <div class="register-right-warp-main-form">
-                        <div v-if="!state.isScan">
-                            <Register/>
-                        </div>
-                        <Scan v-if="state.isScan" />
-                        <div class="register-content-main-sacn" @click="state.isScan = !state.isScan">
-                            <i class="iconfont" :class="state.isScan ? 'icon-diannao1' : 'icon-barcode-qr'"></i>
-                            <div class="register-content-main-sacn-delta"></div>
-                        </div>
+                        <Register />
                     </div>
                 </div>
             </div>
@@ -53,7 +46,6 @@ const storesThemeConfig = useThemeConfig();
 const { themeConfig } = storeToRefs(storesThemeConfig);
 const state = reactive({
     tabsActiveName: 'account',
-    isScan: false,
 });
 
 // 获取布局配置信息
@@ -132,13 +124,13 @@ onMounted(() => {
     }
 
     .register-right {
-        width: 700px;
+        width: 600px;
 
         .register-right-warp {
             border: 1px solid var(--el-color-primary-light-3);
             border-radius: 3px;
             width: 500px;
-            height: 500px;
+            height: 625px;
             position: relative;
             overflow: hidden;
             background-color: var(--el-color-white);

@@ -83,6 +83,7 @@ export default {
 		layoutIframeViewTwo: '内嵌 iframe2',
 		infoIndex: '校园资讯',
 		infoNews: '校园新闻',
+		infoAddNews: '添加新闻',
 	},
 	staticRoutes: {
 		signIn: '登录',

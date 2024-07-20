@@ -49,7 +49,9 @@
         </el-collapse-item>
       </el-collapse> -->
       <el-container>
-        <el-header ><div ref="newsHeader"></div></el-header>
+        <el-header>
+          <div ref="newsHeader"></div>
+        </el-header>
         <el-main>
           <div class="article-content">
             <!-- 文章内容 -->
@@ -81,6 +83,8 @@ import Editor from "@arcgis/core/widgets/Editor";
 import CoordinateConversion from "@arcgis/core/widgets/CoordinateConversion";
 import CustomContent from "@arcgis/core/popup/content/CustomContent";
 import PopupTemplate from "@arcgis/core/PopupTemplate";
+import Legend from "@arcgis/core/widgets/Legend";
+import HeatmapRenderer from "@arcgis/core/renderers/HeatmapRenderer";
 const Map = new ArcGIS();
 let a = 0;
 let features;
@@ -106,10 +110,10 @@ onMounted(() => {
   // });
   // // Add widget to the bottom left corner of the view
   // Map.addUI([{ component: measurement, position: "bottom-left", index: 0 }, { component: scaleBar, position: "bottom-left", index: 1 }]);
-  Map.addLayer(new FeatureLayer({
-    url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trailheads/FeatureServer/0",
-    title: "Trailheads1",
-  }), 7)
+  // Map.addLayer(new FeatureLayer({
+  //   url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trailheads/FeatureServer/0",
+  //   title: "Trailheads1",
+  // }), 7)
   const USALayer = new MapImageLayer({
     url: "http://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer",
     title: "US Sample Data"
@@ -123,7 +127,16 @@ onMounted(() => {
     editingEnabled: true,
   })
 
+
+
+
   console.log(testtttttt)
+  Map.view.ui.add(
+    new Legend({
+      view: Map.view
+    }),
+    "bottom-right"
+  );
   let customContentWidget = new CustomContent({
     outFields: ["*"],
     creator: (event) => {
@@ -132,7 +145,7 @@ onMounted(() => {
       console.log("newsContent.value", newsContent.value);
       newsContent.value.innerHTML = `${event?.graphic.attributes?.content}`;
       newsHeader.value.innerHTML = `<h2>${event?.graphic.attributes?.title}</h2>`;
-      
+
       return test.value
     }
   });
@@ -149,6 +162,7 @@ onMounted(() => {
   };
   testtttttt.popupTemplate = template;
   Map.addLayer(testtttttt, 8)
+
   // 创建图层，显示美国的样本人口普查数据。
   // 设置可见性为false，这样在启动时不可见。
   const censusLayer = new MapImageLayer({
@@ -174,7 +188,7 @@ onMounted(() => {
     opacity: 0.75
   });
 
-  Map.addLayer(demographicGroupLayer, 8);
+  // Map.addLayer(demographicGroupLayer, 8);
 
 
 
@@ -265,7 +279,28 @@ onMounted(() => {
           () => slider.values.map((value) => value),
           (values) => (item.layer.opacity = values[0])
         );
+        const simpleRenderer = testtttttt.renderer;
+        var heatmapRenderer = new HeatmapRenderer({
+          blurRadius: 30, // 增大模糊半径，使点的影响范围更大
+          maxPixelIntensity: 100, // 增加最大像素强度，以增强颜色效果
+          minPixelIntensity: 0, // 设置最小像素强度
+          colorStops: [
+            { ratio: 0, color: "rgba(0, 255, 150, 0)" },
+            { ratio: 0.2, color: "rgba(0, 255, 150, 0.3)" }, // 添加过渡效果
+            { ratio: 0.4, color: "rgba(250, 250, 0, 0.5)" }, // 调整颜色透明度
+            { ratio: 0.6, color: "rgba(250, 150, 0, 0.7)" }, // 调整颜色透明度
+            { ratio: 0.8, color: "rgba(255, 50, 0, 0.9)" }, // 调整颜色透明度
+            { ratio: 1, color: "rgb(255, 0, 0)" } // 增加红色作为最终颜色
+          ],
+        });
 
+        // 监听地图缩放变化，并相应设置不同的渲染器
+        reactiveUtils.watch(
+          () => Map.view.scale,
+          (scale) => {
+            testtttttt.renderer = scale <= 2000 ? simpleRenderer : heatmapRenderer;
+          }
+        );
 
       }
     }

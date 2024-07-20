@@ -96,9 +96,9 @@ class ArcGIS {
 
     this.map = new Map({
       basemap: "osm", // Basemap layer
-      layers: [new FeatureLayer({
-        url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trailheads/FeatureServer/0"
-      })]
+      // layers: [new FeatureLayer({
+      //   url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trailheads/FeatureServer/0"
+      // })]
     });
     this.view = new MapView({
       container: domID,

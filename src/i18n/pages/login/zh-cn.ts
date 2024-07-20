@@ -17,7 +17,7 @@ export default {
 		accountPlaceholder2: '密码：123456',
 		accountPlaceholder3: '请输入验证码',
 		accountBtnText1: '登 录',
-		accountBtnText2: '注 册',
+		accountBtnText2: '去 注 册',
 	},
 	mobile: {
 		placeholder1: '请输入手机号',
@@ -29,10 +29,12 @@ export default {
 	register: {
 		text: '注册',
 		placeholder1: '请输入用户名',
-		placeholder2: '请输入密码',
 		placeholderEmail: '请输入邮箱',
 		sendEmailCode: '发送验证码',
-		btnText: '注 册',
+		placeholderPassword: '请输入密码',
+		placeholderConfirmPassword: '请确认密码',
+		btnText1: '注 册',
+		btnText2: '去 登 录',
 		msgText: '* 温馨提示：建议使用谷歌、Microsoft Edge，版本 79.0.1072.62 及以上浏览器，360浏览器请使用极速模式',
 	},
 	scan: {
