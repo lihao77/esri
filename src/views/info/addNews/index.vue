@@ -1,17 +1,19 @@
 <template>
-    <div class="layout-padding" id="addNews">
-        <div class="layout-padding-auto layout-padding-view">
+    <div class="layout-padding">
+        <div class="layout-padding-auto layout-padding-view" id="addNews">
             <!-- 使用 splitpanes 组件进行布局分割 -->
             <!-- <splitpanes class="default-theme" @resize="paneSize = $event[0].size" style="height: 100%" -->
             <splitpanes class="default-theme" @resize="paneSize = $event[0].size" style="height: 100%"
                 :id="sidebarStyle[sidebarType].id" :horizontal="sidebarType !== 'horizontal'">
-                <pane :size="paneSize" :min-size="sidebarStyle[sidebarType].minSize">
-                    <div class="map-view">
+                <!-- <pane :size="paneSize" :min-size="sidebarStyle[sidebarType].minSize"> -->
+                <pane :size="paneSize">
+                    <div class="map-view"
+                        :style="{ minWidth: sidebarStyle[sidebarType].mapViewMinWidth, minHeight: sidebarStyle[sidebarType].mapViewMinHeight }">
                         <Map id="addNewsMap" />
                     </div>
                 </pane>
                 <pane class="sidebar-pane" :size="100 - paneSize" style="min-width: 30px; min-height: 30px">
-                    <div class="sidebar" :style="{ 'width': '100%' }">
+                    <div class="sidebar" :style="{ 'width': '100%' }" @wheel="handleScroll">
                         <el-card class="sidebar-card" style="border-radius: 0;"
                             :body-style="{ paddingRight: '30px', padding: '0px', height: '100%' }">
                             <el-row style="height: 100%;">
@@ -40,7 +42,7 @@
                                                 {{ sidebarStyle[sidebarType].buttonName }}
                                             </el-button>
                                         </template>
-                                        <el-scrollbar>
+                                        <el-scrollbar @scroll="handleScroll()">
                                             <el-form :model="newsState.form" size="default" label-width="100px"
                                                 label-position="top">
                                                 <el-form-item label="标题">
@@ -82,7 +84,7 @@
 </template>
 
 <script setup lang="ts" name="infoAddNews">
-import { ref, onMounted, onBeforeUnmount, reactive, defineAsyncComponent, watchEffect } from 'vue';
+import { ref, onMounted, onBeforeUnmount, reactive, defineAsyncComponent, watchEffect, computed } from 'vue';
 import { Splitpanes, Pane } from 'splitpanes';
 import 'splitpanes/dist/splitpanes.css';
 import Map from "./map.vue";
@@ -137,8 +139,28 @@ const selectPosition = (event: MouseEvent) => {
     document.getElementById('addNewsMap')?.click();
 };
 
+// 处理滚动事件
+const handleScroll = (event: WheelEvent) => {
+
+    if (event.deltaY > 0) {
+        console.log('滚动');
+        if (paneSize.value > sidebarStyle[sidebarType.value].minSize) {
+            event.preventDefault();
+            paneSize.value -= 2;
+        }
+    } else {
+        console.log('向上滚动');
+        if (paneSize.value < 100) {
+            event.preventDefault();
+            paneSize.value += 2;
+        }
+    }
+
+};
+
 onMounted(() => {
     document.addEventListener('click', handleSidebarClick);
+
 
     const addNews = document.querySelector('#addNews');
     if (addNews) {
@@ -149,6 +171,10 @@ onMounted(() => {
             sidebarType.value = 'vertical';
         }
         paneSize.value = sidebarStyle[sidebarType.value].minSize;
+
+        sidebarStyle['horizontal'].mapViewMinWidth = (width - 7) * sidebarStyle['horizontal'].minSize / 100 + 'px';
+        sidebarStyle['vertical'].mapViewMinHeight = (height - 7) * sidebarStyle['vertical'].minSize / 100 + 'px';
+        console.log(width, height, sidebarStyle['vertical'].mapViewMinWidth);
     }
     console.log(sidebarStyle[sidebarType.value]);
 });
@@ -159,7 +185,7 @@ function handleSidebarClick(event: MouseEvent) {
     if (target?.closest('.map-view') && paneSize.value < sidebarStyle[sidebarType.value].clickMapToMaxSize) {
         updateArrowDirection(paneSize.value, sidebarStyle[sidebarType.value].clickMapToMaxSize);
         paneSize.value = sidebarStyle[sidebarType.value].clickMapToMaxSize;
-    } else if ( target?.closest('.sidebar') && paneSize.value > sidebarStyle[sidebarType.value].clickSidebarToMaxSize ) {
+    } else if (target?.closest('.sidebar') && paneSize.value > sidebarStyle[sidebarType.value].clickSidebarToMaxSize) {
         updateArrowDirection(paneSize.value, sidebarStyle[sidebarType.value].clickSidebarToMaxSize);
         paneSize.value = sidebarStyle[sidebarType.value].clickSidebarToMaxSize;
     }
@@ -171,6 +197,8 @@ interface SidebarStyleObject {
     [key: string]: {
         type: string;
         id: string;
+        mapViewMinWidth: string;
+        mapViewMinHeight: string;
         minSize: number;
         clickMapToMaxSize: number;
         clickSidebarToMaxSize: number;
@@ -185,7 +213,9 @@ const sidebarStyle: SidebarStyleObject = reactive({
     horizontal: {
         type: 'horizontal',
         id: 'addNews-horizontal',
-        minSize: 20,
+        mapViewMinWidth: '100%',
+        mapViewMinHeight: '100%',
+        minSize: 30,
         clickMapToMaxSize: 60,
         clickSidebarToMaxSize: 40,
         arrow: {
@@ -197,7 +227,9 @@ const sidebarStyle: SidebarStyleObject = reactive({
     vertical: {
         type: 'vertical',
         id: 'addNews-vertical',
-        minSize: 0,
+        mapViewMinWidth: '100%',
+        mapViewMinHeight: '100%',
+        minSize: 20,
         clickMapToMaxSize: 80,
         clickSidebarToMaxSize: 20,
         arrow: {
@@ -209,12 +241,13 @@ const sidebarStyle: SidebarStyleObject = reactive({
 });
 
 watchEffect(() => {
-    if (paneSize.value === sidebarStyle[sidebarType.value].minSize) {
+    if (paneSize.value <= sidebarStyle[sidebarType.value].minSize) {
         arrowDirection.value = 'in';
     } else if (paneSize.value === 100) {
         arrowDirection.value = 'out';
     }
 });
+
 
 const state1 = reactive({
     editor: {
@@ -271,9 +304,11 @@ onBeforeUnmount(() => {
 
 #addNews-horizontal {
     z-index: 0;
-    :deep(.splitpanes__splitter){
+
+    :deep(.splitpanes__splitter) {
         z-index: -1;
     }
+
     .map-view {
         height: 100%;
         width: 100%;
@@ -308,12 +343,15 @@ onBeforeUnmount(() => {
 
 #addNews-vertical {
     z-index: 0;
-    :deep(.splitpanes__splitter){
+
+    :deep(.splitpanes__splitter) {
         z-index: -1;
     }
+
     :deep(.sidebar-pane) {
         z-index: -1;
     }
+
     .map-view {
         height: 100%;
         width: 100%;
