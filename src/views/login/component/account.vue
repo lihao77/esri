@@ -119,6 +119,8 @@ const onSignIn = async () => {
 	// 		signInSuccess(isNoPower);
 	// 	}
 	// });
+
+
 	state.loading.signIn = true;
 	// 存储 token 到浏览器缓存
 	Session.set('token', 'qaweqw12312');

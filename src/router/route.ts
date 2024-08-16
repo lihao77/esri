@@ -579,6 +579,7 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 					},
 				],
 			},
+
 			{
 				path: '/info',
 				name: 'infoIndex',
@@ -623,6 +624,40 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 							isIframe: false,
 							roles: ['admin', 'common'],
 							icon: 'fa fa-file-o',
+						},
+					},
+				],
+			},
+
+			{
+				path: '/admin',
+				name: 'adminIndex',
+				component: () => import('/@/layout/routerView/parent.vue'),
+				redirect: '/admin/reviewNews',
+				meta: {
+					title: 'message.router.adminIndex',
+					isLink: '',
+					isHide: false,
+					isKeepAlive: true,
+					isAffix: false,
+					isIframe: false,
+					roles: ['admin', 'common'],
+					icon: 'iconfont icon-zhongduancanshu',
+				},
+				children: [
+					{
+						path: '/admin/reviewNews',
+						name: 'adminReviewNews',
+						component: () => import('/@/views/admin/reviewNews/index.vue'),
+						meta: {
+							title: 'message.router.adminReviewNews',
+							isLink: '',
+							isHide: false,
+							isKeepAlive: true,
+							isAffix: false,
+							isIframe: false,
+							roles: ['admin', 'common'],
+							icon: 'iconfont icon-putong',
 						},
 					},
 				],

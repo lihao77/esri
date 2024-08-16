@@ -15,7 +15,7 @@
 <script setup lang="ts" name="wngEditor">
 // https://www.wangeditor.com/v5/for-frame.html#vue3
 import '@wangeditor/editor/dist/css/style.css';
-import { reactive, shallowRef, watch, onBeforeUnmount } from 'vue';
+import { reactive, shallowRef, watch, onBeforeUnmount, onMounted } from 'vue';
 import { IDomEditor } from '@wangeditor/editor';
 import { Toolbar, Editor } from '@wangeditor/editor-for-vue';
 
@@ -63,6 +63,7 @@ const state = reactive({
 // 编辑器回调函数
 const handleCreated = (editor: IDomEditor) => {
 	editorRef.value = editor;
+	props.disable ? editor.disable() : editor.enable();
 };
 // 编辑器内容改变时
 const handleChange = (editor: IDomEditor) => {
@@ -80,8 +81,10 @@ onBeforeUnmount(() => {
 watch(
 	() => props.disable,
 	(bool) => {
+		
 		const editor = editorRef.value;
 		if (editor == null) return;
+
 		bool ? editor.disable() : editor.enable();
 	},
 	{
@@ -98,4 +101,5 @@ watch(
 		deep: true,
 	}
 );
+
 </script>

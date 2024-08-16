@@ -6,10 +6,14 @@
  * @ Love and Peace
  */
 import ArcGIS from "./init.js";
+import WKTParser from "./modules/WKTParser.js"; // 导入WKTParser
 import { baseMapChange } from "./modules/BaseMap";
 import { addLayer, removeLayer } from "./modules/LayerControl.js";
 import { MeasurementClose } from "./modules/Measurement.js";
 import { drawInit, drawActive } from "./modules/Draw.js";
+
+// 将WKTParser挂载到ArcGIS的原型上
+ArcGIS.prototype.WKTParser = WKTParser;
 
 // 图层切换
 ArcGIS.prototype.baseMapChange = baseMapChange;

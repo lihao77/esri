@@ -1,20 +1,19 @@
 <template>
   <div class="newsMain">
     <div id="newsMap"></div>
-    <div id="test" style="width: 100%;" ref='test'>
+    <div ref="dataDisplayRef" v-show="isDisplay.display">
+      <el-card class="box-card">
 
-      <el-container>
-        <el-header>
-          <div ref="newsHeader"></div>
-        </el-header>
-        <el-main>
-          <div class="article-content">
-            <!-- 文章内容 -->
-            <p ref="newsContent">这里是文章的第一段内容...</p>
-            <!-- 更多内容 -->
-          </div>
-        </el-main>
-      </el-container>
+        <div>
+          <strong>日期:</strong> {{ isDisplay.data.date }}
+        </div>
+        <div>
+          <strong>位置:</strong> {{ isDisplay.data.position }}
+        </div>
+        <el-divider></el-divider>
+        <div v-html="isDisplay.data.htmlVal"></div>
+
+      </el-card>
     </div>
   </div>
 
@@ -39,21 +38,30 @@ import Point from "@arcgis/core/geometry/Point";
 import Graphic from '@arcgis/core/Graphic';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 const Map = new ArcGIS();
-let a = 0;
-let features;
-const activeNames = ref(['1'])
+
 const handleChange = (val: string[]) => {
   console.log(val)
 }
-const test = ref()
+
 const newsContent = ref()
-const newsHeader = ref()
+const dataDisplayRef = ref()
 const props = defineProps({
   isSelecting: {
     type: Boolean,
     required: true
   }
 });
+
+const isDisplay = ref({
+  display: false,
+  data: {
+    title: '',
+    date: '',
+    position: '',
+    htmlVal: ''
+  }
+});
+
 const emit = defineEmits(['wkt-selected'])
 const clickHandler = (event: { mapPoint: { x: any; y: any; spatialReference: any; }; }) => {
   // 清除地图视图中的所有图形
@@ -94,23 +102,69 @@ const clickHandler = (event: { mapPoint: { x: any; y: any; spatialReference: any
 const clearGraphics = () => {
   Map.view.graphics.removeAll();
 };
+
+const showFeatureOnMap = (row) => {
+  // 假设 row.position 是一个对象，包含 { x, y } 坐标
+  const position = row.position;
+  if (!position) return;
+  // 使用 WKT 解析器将 WKT 字符串转换为 GeoJSON 对象
+  const geojson = Map.WKTParser.wktToJson(position);
+  console.log(position, geojson);
+  if (geojson.type === "POINT") {
+    const point = new Point({
+      longitude: geojson.coordinates[0],
+      latitude: geojson.coordinates[1],
+      spatialReference: { wkid: 4326 }
+    });
+
+    const markerSymbol = new SimpleMarkerSymbol({
+      color: [226, 119, 40],
+      outline: {
+        color: [255, 255, 255],
+        width: 2
+      }
+    });
+
+    isDisplay.value.data = row;
+    isDisplay.value.display = true;
+
+    console.log(dataDisplayRef.value);
+
+    const graphic = new Graphic({
+      geometry: point,
+      symbol: markerSymbol,
+      attributes: row,
+      popupTemplate: {
+        title: "{title}",
+        content: dataDisplayRef.value // 使用 row 中的 HTML 内容
+      }
+    });
+
+    // 清除现有图形并添加新的图形
+    Map.view.graphics.removeAll();
+    Map.view.graphics.add(graphic);
+
+    // 聚焦到新添加的图形
+    Map.view.goTo(point);
+
+    // 显示弹窗
+    Map.view.openPopup({
+      location: point,
+      title: row.title,
+      content: dataDisplayRef.value // 注意：这里直接使用了 HTML 字符串
+    });
+  }
+};
+
 onMounted(() => {
   Map.init("newsMap");
-  const USALayer = new MapImageLayer({
-    url: "http://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer",
-    title: "US Sample Data"
-  });
-
   // 当Map视图准备就绪时执行的操作
   Map.view?.when(() => {
-
-
     // 在LayerList中创建操作
     async function defineActions(event: { item: any; }) {
       const { item } = event; // 从event对象中获取item属性
       // 等待图层加载完成
       await item.layer.when();
-
       if (item.layer.fullExtent && item.layer.url) {
         // 在LayerList中创建操作的对象数组
         item.actionsSections = [
@@ -260,7 +314,8 @@ watchEffect(() => {
 
 defineExpose({
   Map,
-  clearGraphics
+  clearGraphics,
+  showFeatureOnMap,
 });
 </script>
 
@@ -275,6 +330,10 @@ defineExpose({
   #newsMap {
     width: 100%;
     height: 100%;
+
+    :deep(.esri-view-root) {
+      z-index: 200;
+    }
   }
 
   .article-content p {

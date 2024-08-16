@@ -321,7 +321,10 @@ declare type TableDemoState = {
 			isBorder: boolean;
 			isSelection: boolean;
 			isSerialNo: boolean;
+			isExpand: boolean;
 			isOperate: boolean;
+			
+			operateWidth: number;
 		};
 		search: TableSearchType[];
 		param: EmptyObjectType;

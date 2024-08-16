@@ -84,6 +84,8 @@ export default {
 		infoIndex: '校园资讯',
 		infoNews: '校园新闻',
 		infoAddNews: '添加新闻',
+		adminIndex: '管理员',
+		adminReviewNews: '审核新闻',
 	},
 	staticRoutes: {
 		signIn: '登录',
