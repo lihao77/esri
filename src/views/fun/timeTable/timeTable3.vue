@@ -295,7 +295,7 @@ export default {
   .time-b {
     height: 46px;
     margin-bottom: 12px;
-    margin-top: 12px;
+    padding-top: 12px;
     padding-left: 24px;
     padding-right: 24px;
     display: flex;

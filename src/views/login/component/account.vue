@@ -100,35 +100,35 @@ const navigateToRegister = () => {
 };
 // 登录
 const onSignIn = async () => {
-	// loginApi.signIn(state.ruleForm).then(async (res) => {
+	loginApi.signIn(state.ruleForm).then(async (res) => {
 
-	// 	state.loading.signIn = true;
-	// 	// 存储 token 到浏览器缓存
-	// 	Session.set('token', res.token);
-	// 	// 模拟数据，对接接口时，记得删除多余代码及对应依赖的引入。用于 `/src/stores/userInfo.ts` 中不同用户登录判断（模拟数据）
-	// 	Cookies.set('userName', state.ruleForm.userName);
-	// 	if (!themeConfig.value.isRequestRoutes) {
-	// 		// 前端控制路由，2、请注意执行顺序
-	// 		const isNoPower = await initFrontEndControlRoutes();
-	// 		signInSuccess(isNoPower);
-	// 	} else {
-	// 		// 模拟后端控制路由，isRequestRoutes 为 true，则开启后端控制路由
-	// 		// 添加完动态路由，再进行 router 跳转，否则可能报错 No match found for location with path "/"
-	// 		const isNoPower = await initBackEndControlRoutes();
-	// 		// 执行完 initBackEndControlRoutes，再执行 signInSuccess
-	// 		signInSuccess(isNoPower);
-	// 	}
-	// });
+		state.loading.signIn = true;
+		// 存储 token 到浏览器缓存
+		Session.set('token', res.token);
+		// 模拟数据，对接接口时，记得删除多余代码及对应依赖的引入。用于 `/src/stores/userInfo.ts` 中不同用户登录判断（模拟数据）
+		Cookies.set('userName', state.ruleForm.userName);
+		if (!themeConfig.value.isRequestRoutes) {
+			// 前端控制路由，2、请注意执行顺序
+			const isNoPower = await initFrontEndControlRoutes();
+			signInSuccess(isNoPower);
+		} else {
+			// 模拟后端控制路由，isRequestRoutes 为 true，则开启后端控制路由
+			// 添加完动态路由，再进行 router 跳转，否则可能报错 No match found for location with path "/"
+			const isNoPower = await initBackEndControlRoutes();
+			// 执行完 initBackEndControlRoutes，再执行 signInSuccess
+			signInSuccess(isNoPower);
+		}
+	});
 
 
-	state.loading.signIn = true;
-	// 存储 token 到浏览器缓存
-	Session.set('token', 'qaweqw12312');
-	// 模拟数据，对接接口时，记得删除多余代码及对应依赖的引入。用于 `/src/stores/userInfo.ts` 中不同用户登录判断（模拟数据）
-	Cookies.set('userName', '12');
-	// 前端控制路由，2、请注意执行顺序
-	const isNoPower = await initFrontEndControlRoutes();
-	signInSuccess(isNoPower);
+	// state.loading.signIn = true;
+	// // 存储 token 到浏览器缓存
+	// Session.set('token', 'qaweqw12312');
+	// // 模拟数据，对接接口时，记得删除多余代码及对应依赖的引入。用于 `/src/stores/userInfo.ts` 中不同用户登录判断（模拟数据）
+	// Cookies.set('userName', '12');
+	// // 前端控制路由，2、请注意执行顺序
+	// const isNoPower = await initFrontEndControlRoutes();
+	// signInSuccess(isNoPower);
 
 };
 // 登录成功后的跳转

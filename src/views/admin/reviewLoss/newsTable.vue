@@ -10,34 +10,23 @@
                         <el-card>
                             <el-form ref="newsForm" :model="row" size="default" label-width="100px"
                                 label-position="top">
-                                <el-form-item label="标题" prop="title">
-                                    <el-input v-model="row.title" placeholder="请输入标题" clearable></el-input>
+                                <el-form-item label="标题" prop="goods">
+                                    <el-input v-model="row.goods" placeholder="请输入标题" clearable disabled></el-input>
                                 </el-form-item>
 
                                 <el-form-item label="位置" prop="position">
                                     <el-input v-model="row.position" placeholder="使用左边按钮选择位置" disabled clearable>
-                                        <template #prepend v-if="!row.editorDisable">
-                                            <el-button-group class="ml-4">
-                                                <el-button @click="selectPosition($event, row)">
-                                                    <SvgIcon v-if="!isSelecting" name="ele-Location" />
-                                                    <SvgIcon v-else name="ele-CloseBold" />
-                                                </el-button>
-                                                <el-button @click="deletePosition(row)" type="primary">
-                                                    <SvgIcon name="ele-DeleteFilled" />
-                                                </el-button>
-                                            </el-button-group>
-                                        </template>
                                     </el-input>
                                 </el-form-item>
                                 <el-form-item label="日期" prop="date">
                                     <el-date-picker v-model="row.date" type="datetime" placeholder="Pick a Date"
                                         format="YYYY-MM-DD HH:mm:ss" date-format="MMM DD, YYYY" time-format="HH:mm"
-                                        style="width: 100%;" />
+                                        style="width: 100%;" disabled />
                                 </el-form-item>
 
-                                <el-form-item label="内容" prop="content">
-                                    <Editor v-model:get-html="row.htmlVal" v-model:get-text="row.textVal"
-                                        :disable="row.editorDisable" />
+                                <el-form-item label="联系方式" prop="howToGet">
+                                    <el-input v-model="row.howToGet" :style="{ width: '100%' }" autosize
+                                        type="textarea" placeholder="请输入联系方式" disabled/>
                                 </el-form-item>
                                 <el-form-item>
                                     <el-button-group class="ml-4" style="display: flex; justify-content: center;">
@@ -70,10 +59,10 @@
         </div>
     </el-card>
     <el-dialog v-model="publishDialogVisible" title="发布">
-        <span>{{ confirmTitle() }}</span>
+        <span>确定发布吗？</span>
         <el-divider></el-divider>
         <el-button @click="canclePublish()">取消</el-button>
-        <el-button type="primary" @click="publishNews()">
+        <el-button type="primary" @click="publishLoss()">
             发布
         </el-button>
     </el-dialog>
@@ -93,7 +82,7 @@
             </el-form-item>
         </el-form>
         <!-- <el-button @click="canclePublish()">取消</el-button>
-        <el-button type="primary" @click="publishNews()">
+        <el-button type="primary" @click="publishLoss()">
             发布
         </el-button> -->
     </el-dialog>
@@ -102,22 +91,15 @@
 <script setup lang="ts" name="makeTableDemo">
 import { defineAsyncComponent, reactive, ref, onMounted, computed } from 'vue';
 import { ElMessage } from 'element-plus';
-import { useReviewNewsApi } from '/@/api/admin/reviewNews';
+import { useReviewLossApi } from '/@/api/admin/reviewLoss';
 // 引入组件
 const Table = defineAsyncComponent(() => import('/@/components/table/index.vue'));
 const TableSearch = defineAsyncComponent(() => import('/@/views/admin/reviewNews/search.vue'));
 const Editor = defineAsyncComponent(() => import('/@/components/editor/index.vue'));
 
-const props = defineProps({
-    // 父组件传递的参数
-    isSelecting: {
-        type: Boolean,
-        required: true,
-    },
-});
 
-const emit = defineEmits(['showFeatureOnMap', 'update:isWatching', 'delete:position', 'update:isSelecting']);
-const reviewNewsApi = useReviewNewsApi();
+const emit = defineEmits(['showFeatureOnMap']);
+const reviewNewsApi = useReviewLossApi();
 // 定义变量内容
 const publishDialogVisible = ref(false);
 const modifyDialogVisible = ref(false);
@@ -183,9 +165,10 @@ const state = reactive<TableDemoState>({
         data: [],
         // 表头内容（必传，注意格式）
         header: [
-            { key: 'title', colWidth: '', title: '新闻标题', type: 'text', isCheck: true },
+            { key: 'goods', colWidth: '', title: '失物名称', type: 'text', isCheck: true },
             { key: 'date', colWidth: '', title: '时间', type: 'date', isCheck: true },
             { key: 'position', colWidth: '', title: '地点', type: 'text', isCheck: true },
+            { key: 'howToGet', colWidth: '', title: '地点', type: 'text', isCheck: true },
             // { key: 'image', colWidth: '', width: '70', height: '40', title: '图片', type: 'image', isCheck: true },
         ],
         // 配置项（必传）
@@ -202,7 +185,7 @@ const state = reactive<TableDemoState>({
         },
         // 搜索表单，动态生成（传空数组时，将不显示搜索，注意格式）
         search: [
-            { label: '新闻标题', prop: 'title', placeholder: '请输入新闻标题', required: true, type: 'input' },
+            { label: '失物名称', prop: 'goods', placeholder: '请输入物品名称', required: true, type: 'input' },
             { label: '时间', prop: 'date', placeholder: '请选择时间', required: true, type: 'date' },
             { label: '地点', prop: 'position', placeholder: '请输入地点', required: false, type: 'input' },
             // { label: '图片', prop: 'image', placeholder: '请输入图片描述', required: false, type: 'input' },
@@ -213,7 +196,7 @@ const state = reactive<TableDemoState>({
             pageSize: 10,
         },
         // 打印标题
-        printName: '新闻审核表单',
+        printName: '失物招领审核表单',
     }
 
 });
@@ -232,7 +215,6 @@ const editRow = (row: any) => {
 const viewRow = (row: any) => {
     ElMessage.info(`查看行: ${row.id}`);
     // 将数据在地图展示
-    emit('update:isWatching', true);
 
     emit('showFeatureOnMap', row);
 };
@@ -254,14 +236,14 @@ const canclePublish = () => {
     publishRowData = {}
     publishDialogVisible.value = false
 }
-const publishNews = () => {
+const publishLoss = () => {
     if (Object.keys(publishRowData).length > 0) {
         publishRowData.status = 1
         console.log(publishRowData);
         reviewNewsApi.modifyNews(publishRowData).then((res) => {
-            if(res.status == 200){
+            if (res.status == 200) {
                 ElMessage.success(res.message);
-            }else{
+            } else {
                 ElMessage.warning(res.message);
             }
             getTableData()
@@ -283,9 +265,9 @@ const cancleModify = () => {
 const modifyNews = () => {
     if (modifyReasonForm.modifyReason != '') {
         reviewNewsApi.modifyNews(modifyReasonForm).then((res) => {
-            if(res.status == 200){
+            if (res.status == 200) {
                 ElMessage.success(res.message);
-            }else{
+            } else {
                 ElMessage.warning(res.message);
             }
             getTableData()
@@ -320,7 +302,7 @@ const getTableData = () => {
     //     });
     // }
 
-    reviewNewsApi.getReviewNewsData().then((res) => {
+    reviewNewsApi.getReviewLossData().then((res) => {
         state.tableData.data = res.data;
         state.tableData.config.total = state.tableData.data.length;
         setTimeout(() => {
@@ -351,24 +333,7 @@ const onSortHeader = (data: TableHeaderType[]) => {
     state.tableData.header = data;
 };
 
-const selectPosition = (event: MouseEvent, row: any) => {
-    console.log('选择位置');
 
-    if (props.isSelecting) {
-        emit('update:isSelecting', false, row);
-
-        ElMessage.success('选择器已关闭');
-    } else {
-        event.stopPropagation();
-        emit('update:isSelecting', true, row);
-
-        ElMessage.success('请在地图上选择位置');
-    }
-};
-const deletePosition = (row: any) => {
-    row.position = '';
-    emit('delete:position');
-};
 // 页面加载时
 onMounted(() => {
     getTableData();

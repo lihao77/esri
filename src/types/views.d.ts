@@ -2,9 +2,10 @@
  * views personal
  */
 type NewInfo = {
-	title: string;
+	id: number;
+	goods: string;
 	date: string;
-	link: string;
+	status: string;
 };
 type Recommend = {
 	title: string;
@@ -14,7 +15,7 @@ type Recommend = {
 	iconColor: string;
 };
 declare type PersonalState = {
-	newsInfoList: NewInfo[];
+	lossInfoList: LossInfo[];
 	recommendList: Recommend[];
 	personalForm: {
 		name: string;
